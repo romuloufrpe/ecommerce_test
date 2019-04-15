@@ -1,0 +1,52 @@
+name: historias
+description: A new Flutter project.
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.1.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^0.1.2
+  carousel_pro: ^0.0.13
+  firebase_auth: ^0.8.4+2
+  cloud_firestore: ^0.9.13+1
+  google_sign_in: ^4.0.1+3
+  shared_preferences: ^0.5.2
+  fluttertoast: ^3.0.3
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter   
+  font_awesome_flutter: ^8.0.1
+
+flutter:
+
+  uses-material-design: true
+
+  assets:
+    - assets/img/c1.jpg
+    - assets/img/c2.jpeg
+    - assets/img/c4.jpg
+    - assets/img/c5.jpg
+    - assets/img/back_login.jpg
+    - assets/img/bg_login.jpg
+    - assets/img/logo.png
+    - assets/cat/t_shirt.png
+    - assets/cat/accessories.png
+    - assets/cat/dress.png
+    - assets/cat/formal.png
+    - assets/cat/Jeans-icon.png
+    - assets/cat/shoe.png
+    - assets/products/blazer.jpg
+    - assets/products/jeans-01.jpg
+    - assets/products/jeans-02.jpg
+    - assets/products/tenisbalada3.jpg
+    - assets/products/tenisbalada4.jpg
+    - assets/products/tenisbalada6.jpg
+    - assets/products/tshirt-01.jpg
+    - assets/products/tshirt-02.jpg
+    - assets/products/tshirt-03.jpg
