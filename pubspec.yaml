@@ -28,25 +28,6 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/img/c1.jpg
-    - assets/img/c2.jpeg
-    - assets/img/c4.jpg
-    - assets/img/c5.jpg
-    - assets/img/back_login.jpg
-    - assets/img/bg_login.jpg
-    - assets/img/logo.png
-    - assets/cat/t_shirt.png
-    - assets/cat/accessories.png
-    - assets/cat/dress.png
-    - assets/cat/formal.png
-    - assets/cat/Jeans-icon.png
-    - assets/cat/shoe.png
-    - assets/products/blazer.jpg
-    - assets/products/jeans-01.jpg
-    - assets/products/jeans-02.jpg
-    - assets/products/tenisbalada3.jpg
-    - assets/products/tenisbalada4.jpg
-    - assets/products/tenisbalada6.jpg
-    - assets/products/tshirt-01.jpg
-    - assets/products/tshirt-02.jpg
-    - assets/products/tshirt-03.jpg
+    - assets/img/
+    - assets/cat/
+    - assets/products/

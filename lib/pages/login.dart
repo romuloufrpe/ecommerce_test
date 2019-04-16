@@ -12,8 +12,7 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-  final GoogleSignIn googleSignIn = new GoogleSignIn();
-  final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+  FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   final _formKey = GlobalKey<FormState>();
   TextEditingController _emailTextController = TextEditingController();
   TextEditingController _passwordTextController = TextEditingController();
@@ -28,140 +27,148 @@ class _LoginState extends State<Login> {
     isSignedIn();
   }
 
-  Future handleSignIn() async {
-    preferences = await SharedPreferences.getInstance();
-
-    setState(() {
-      loading = true;
-    });
-
-    GoogleSignInAccount googleUser = await googleSignIn.signIn();
-    GoogleSignInAuthentication googleAuth = await googleUser.authentication;
-    AuthCredential credential = GoogleAuthProvider.getCredential(
-        accessToken: googleAuth.accessToken, idToken: googleAuth.idToken);
-    FirebaseUser firebaseUser =
-        await firebaseAuth.signInWithCredential(credential);
-
-    if (firebaseUser != null) {
-      final QuerySnapshot result = await Firestore.instance
-          .collection("users")
-          .where("id", isEqualTo: firebaseUser.uid)
-          .getDocuments();
-      final List<DocumentSnapshot> documents = result.documents;
-
-      if (documents.length == 0) {
-        // insert the user a collection
-        Firestore.instance
-            .collection("users")
-            .document(firebaseUser.uid)
-            .setData({
-          "id": firebaseUser.uid,
-          "username": firebaseUser.displayName,
-          "profile": firebaseUser.photoUrl,
-          "email": firebaseUser.email
-        });
-        await preferences.setString("id", firebaseUser.uid);
-        await preferences.setString("username", firebaseUser.displayName);
-        await preferences.setString("photoUrl", firebaseUser.displayName);
-      } else {
-        await preferences.setString("id", documents[0]['id']);
-        await preferences.setString("username", documents[0]['username']);
-        await preferences.setString("photoUrl", documents[0]['photoUrl']);
-      }
-      //showInSnackBar("Login Realizado com Sucesso!");
-      setState(() {
-        loading = false;
-      });
-    } else {}
-    assert(firebaseUser.email != null);
-    assert(firebaseUser.displayName != null);
-    assert(!firebaseUser.isAnonymous);
-    assert(await firebaseUser.getIdToken() != null);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomPadding: false,
       body: Stack(
         children: <Widget>[
           Image.asset(
-            "assets/img/bg_login.jpg",
+            "assets/img/bg_logiin.jpg",
             fit: BoxFit.cover,
-            width: double.infinity,
-          ),
-          Container(
-            alignment: Alignment.topCenter,
-            child: Padding(
-              padding: EdgeInsets.all(70.0),
-              child: Image.asset("assets/img/logo.png"),
-            ),
-          ),
-          Container(
-            color: Colors.orange.withOpacity(0.2),
             width: double.infinity,
             height: double.infinity,
           ),
+          Padding(
+            padding: const EdgeInsets.all(30.0),
+            child: Container(
+              alignment: Alignment.topCenter,
+              child: Image.asset(
+                "assets/img/logo.png",
+                width: 280.0,
+                height: 240.0,
+              ),
+            ),
+          ),
           Container(
-              alignment: Alignment.center,
-              child: Center(
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Material(
-                            borderRadius: BorderRadius.circular(20.0),
-                            color: Colors.white.withOpacity(0.5),
-                            elevation: 0.0,
-                            child: Padding(
-                              padding: const EdgeInsets.only(left: 12.0),
-                              child: TextFormField(
-                                controller: _emailTextController,
-                                decoration: InputDecoration(
-                                  hintText: "Email",
-                                  icon: Icon(Icons.email),
-                                ),
-                                validator: (value) {
-                                  if (value.isEmpty) {
-                                    Pattern pattern =
-                                        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
-                                    RegExp regex = new RegExp(pattern);
-                                    if (!regex.hasMatch(value)) {
-                                      return "Porfavor entre com um e-mail válido!";
-                                    } else {
-                                      return null;
-                                    }
+            color: Colors.black.withOpacity(0.6),
+            width: double.infinity,
+            height: double.infinity,
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 280.0),
+            child: Center(
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(14.0, 8.0, 14.0, 8.0),
+                      child: Material(
+                          borderRadius: BorderRadius.circular(10.0),
+                          color: Colors.white.withOpacity(0.8),
+                          elevation: 0.0,
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 12.0),
+                            child: TextFormField(
+                              controller: _emailTextController,
+                              decoration: InputDecoration(
+                                hintText: "Email",
+                                icon: Icon(Icons.email),
+                              ),
+                              validator: (value) {
+                                if (value.isEmpty) {
+                                  Pattern pattern =
+                                      r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+                                  RegExp regex = new RegExp(pattern);
+                                  if (!regex.hasMatch(value)) {
+                                    return "Porfavor entre com um e-mail válido!";
+                                  } else {
+                                    return null;
                                   }
-                                },
-                              ),
-                            )),
-                      ),
+                                }
+                              },
+                            ),
+                          )),
+                    ),
 //                   ===================== Field Password
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Material(
-                            borderRadius: BorderRadius.circular(20.0),
-                            color: Colors.white.withOpacity(0.5),
-                            elevation: 0.0,
-                            child: Padding(
-                              padding: const EdgeInsets.only(left: 12.0),
-                              child: TextFormField(
-                                controller: _passwordTextController,
-                                decoration: InputDecoration(
-                                  hintText: "Senha",
-                                  icon: Icon(Icons.lock_outline),
-                                ),
-                                validator: (value) {
-                                  
-                                },
-                              ),
-                            )),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(14.0, 8.0, 14.0, 8.0),
+                      child: Material(
+                        borderRadius: BorderRadius.circular(10.0),
+                        color: Colors.white.withOpacity(0.8),
+                        elevation: 0.0,
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 12.0),
+                          child: TextFormField(
+                            controller: _passwordTextController,
+                            decoration: InputDecoration(
+                              hintText: "Senha",
+                              icon: Icon(Icons.lock_outline),
+                            ),
+                            validator: (value) {
+                              if (value.isEmpty) {
+                                return "O campo senha esta vazio";
+                              } else if (value.length < 6) {
+                                return "A senha precisa conter mais de 6 caracteres";
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
                       ),
-                    ],
-                  ),
+                    ),
+// ============================== BUTTON LOGIN
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(14.0, 8.0, 14.0, 8.0),
+                      child: Material(
+                        borderRadius: BorderRadius.circular(10.0),
+                        color: Colors.orange.shade700,
+                        elevation: 0.0,
+                        child: MaterialButton(
+                          onPressed: () {},
+                          minWidth: MediaQuery.of(context).size.width,
+                          child: Text(
+                            "Login",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 22.0),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        "Esqueceu a Senha ?",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.w400),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: RichText(
+                        text: TextSpan(
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w400,
+                                fontSize: 16.0),
+                            children: [
+                              TextSpan(text: "Ainda não tem conta? "),
+                              TextSpan(
+                                  text: "Cadastre-se",
+                                  style: TextStyle(color: Colors.red))
+                            ]),
+                      ),
+                    ),
+                  ],
                 ),
-              )),
+              ),
+            ),
+          ),
           Visibility(
             visible: loading ?? true,
             child: Center(
@@ -176,21 +183,6 @@ class _LoginState extends State<Login> {
           ),
         ],
       ),
-      bottomNavigationBar: Container(
-          child: Padding(
-        padding:
-            EdgeInsets.only(left: 12.0, right: 12.0, top: 8.0, bottom: 8.0),
-        child: FlatButton(
-          color: Colors.orange.shade900,
-          onPressed: () {
-            handleSignIn();
-          },
-          child: Text(
-            "Login com Google",
-            style: TextStyle(color: Colors.white),
-          ),
-        ),
-      )),
     );
   }
 
@@ -199,7 +191,6 @@ class _LoginState extends State<Login> {
       loading = true;
     });
     preferences = await SharedPreferences.getInstance();
-    isLogedin = await googleSignIn.isSignedIn();
     if (isLogedin) {
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => HomePage()));
@@ -209,21 +200,4 @@ class _LoginState extends State<Login> {
       loading = false;
     });
   }
-
-  /*void showInSnackBar(String value) {
-    FocusScope.of(context).requestFocus(new FocusNode());
-    _scaffoldKey.currentState?.removeCurrentSnackBar();
-    _scaffoldKey.currentState.showSnackBar(new SnackBar(
-      content: new Text(
-        value,
-        textAlign: TextAlign.center,
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 16.0,
-        ),
-      ),
-      backgroundColor: Colors.blue,
-      duration: Duration(seconds: 3),
-    ));
-  }*/
 }
