@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'theme.dart' as Theme;
 import 'package:historias/pages/cart.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:historias/pages/login.dart';
 
 class DrawerWidget extends StatefulWidget {
   @override
@@ -25,7 +27,11 @@ class _DrawerWidgetState extends State<DrawerWidget> {
         Divider(),
         _tiles("CONFIGURAÇÕES", FontAwesomeIcons.cog, 4, () {}),
         _tiles("SOBRE", FontAwesomeIcons.addressBook, 5, () {}),
-        _tiles("SAIR", FontAwesomeIcons.arrowCircleLeft, 6, () {}),
+        _tiles("SAIR", FontAwesomeIcons.arrowCircleLeft, 6, () {
+            FirebaseAuth.instance.signOut().then((value){
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Login()));
+            });
+        }),
       ],
     );
   }

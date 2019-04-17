@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:historias/db/users.dart';
+import 'package:historias/ui/home.dart';
 
 class SignUp extends StatefulWidget {
   @override
@@ -11,6 +13,7 @@ class SignUp extends StatefulWidget {
 class _SignUpState extends State<SignUp> {
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   final _formKey = GlobalKey<FormState>();
+  UserServices _userServices = UserServices();
   TextEditingController _nameTextController = TextEditingController();
   TextEditingController _emailTextController = TextEditingController();
   TextEditingController _passwordTextController = TextEditingController();
@@ -201,7 +204,9 @@ class _SignUpState extends State<SignUp> {
                               color: Colors.orange.shade700,
                               elevation: 0.0,
                               child: MaterialButton(
-                                onPressed: () {},
+                                onPressed: () async {
+                                  validateFrom();
+                                },
                                 minWidth: MediaQuery.of(context).size.width,
                                 child: Text(
                                   "Criar Conta",
@@ -243,5 +248,32 @@ class _SignUpState extends State<SignUp> {
         groupValue = e;
       }
     });
+  }
+
+  Future validateFrom() async {
+    FormState formState = _formKey.currentState;
+    Map value;
+    if (formState.validate()) {
+      formState.reset();
+      FirebaseUser user = await firebaseAuth.currentUser();
+      if (user == null) {
+        firebaseAuth
+            .createUserWithEmailAndPassword(
+                email: _emailTextController.text,
+                password: _passwordTextController.text)
+            .then((user) => {
+                  value = {
+                    "username": _nameTextController.text,
+                    "email": _emailTextController.text,
+                    "userId": user.uid
+                  },
+                  _userServices.createUser(value)
+                })
+            .catchError((err) => {print(err.toString())});
+
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => HomePage()));
+      }
+    }
   }
 }
