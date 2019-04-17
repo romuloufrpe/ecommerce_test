@@ -4,6 +4,7 @@ import 'theme.dart' as Theme;
 import 'package:historias/pages/cart.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:historias/pages/login.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 class DrawerWidget extends StatefulWidget {
   @override
@@ -11,7 +12,10 @@ class DrawerWidget extends StatefulWidget {
 }
 
 class _DrawerWidgetState extends State<DrawerWidget> {
+  final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+//  String email = firebaseAuth.currentUser();
   int itemSelect = 0;
+  
 
   Widget _listMenu() {
     return ListView(
@@ -28,7 +32,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
         _tiles("CONFIGURAÇÕES", FontAwesomeIcons.cog, 4, () {}),
         _tiles("SOBRE", FontAwesomeIcons.addressBook, 5, () {}),
         _tiles("SAIR", FontAwesomeIcons.arrowCircleLeft, 6, () {
-            FirebaseAuth.instance.signOut().then((value){
+            firebaseAuth.signOut().then((value){
               Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Login()));
             });
         }),
