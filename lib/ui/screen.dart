@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:historias/component/theme.dart' as Theme;
 import 'package:historias/component/carosel.dart';
-import 'package:historias/component/horizontal_listView.dart';
 import 'package:historias/component/products.dart';
 import 'package:historias/pages/cart.dart';
 
@@ -68,7 +67,7 @@ class _DrawerWidgetState extends State<ScreenWidget> {
                       TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)),
             ),
           ),
-          Flexible(child: Products()),
+         new Flexible(child: Products()),
         ],
       ),
     );

@@ -8,12 +8,18 @@ class ProductDetails extends StatefulWidget {
   final product_detail_new_price;
   final product_detail_old_price;
   final product_detail_picture;
+  final product_detail_desc;
+  final product_detail_cat;
+  final product_detail_brand;
 
   ProductDetails(
       {this.product_detail_name,
       this.product_detail_new_price,
       this.product_detail_old_price,
-      this.product_detail_picture});
+      this.product_detail_picture,
+      this.product_detail_desc,
+      this.product_detail_cat,
+      this.product_detail_brand});
 
   @override
   _ProductDetailsState createState() => _ProductDetailsState();
@@ -50,8 +56,16 @@ class _ProductDetailsState extends State<ProductDetails> {
             height: 300.0,
             child: GridTile(
               child: new Container(
-                color: Colors.white,
-                child: Image.asset(widget.product_detail_picture),
+                decoration: new BoxDecoration(
+                  borderRadius: new BorderRadius.only(
+                    bottomLeft: new Radius.circular(100.0),
+                    bottomRight: new Radius.circular(100.0),
+                  ),
+                  image: new DecorationImage(
+                    image: new NetworkImage("${widget.product_detail_picture}"),
+                    fit: BoxFit.fitHeight
+                  )
+                ),
               ),
               footer: new Container(
                 color: Colors.white70,
@@ -61,13 +75,6 @@ class _ProductDetailsState extends State<ProductDetails> {
                           fontWeight: FontWeight.bold, fontSize: 18.0)),
                   title: new Row(
                     children: <Widget>[
-                      Expanded(
-                          child: new Text(
-                        "\R\$${widget.product_detail_old_price}",
-                        style: TextStyle(
-                            color: Colors.grey,
-                            decoration: TextDecoration.lineThrough),
-                      )),
                       Expanded(
                           child: new Text(
                         "\R\$${widget.product_detail_new_price}",
@@ -234,7 +241,7 @@ class _ProductDetailsState extends State<ProductDetails> {
           new ListTile(
             title: new Text("Detalhes do Produto"),
             subtitle: new Text(
-                "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting"),
+                "${widget.product_detail_desc}")
           ),
           Divider(color: Colors.black),
           new Row(
@@ -245,7 +252,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                       style: TextStyle(color: Colors.grey))),
               Padding(
                   padding: EdgeInsets.all(5.0),
-                  child: new Text(widget.product_detail_name)),
+                  child: new Text("${widget.product_detail_name}")),
             ],
           ),
 
@@ -258,19 +265,7 @@ class _ProductDetailsState extends State<ProductDetails> {
 
               // REMEMBER TO CREATE THE PRODUCT BRAND
               Padding(
-                  padding: EdgeInsets.all(5.0), child: new Text("Brando X")),
-            ],
-          ),
-
-          new Row(
-            children: <Widget>[
-              Padding(
-                  padding: const EdgeInsets.fromLTRB(12.0, 5.0, 5.0, 5.0),
-                  child: new Text("Condição do Produto",
-                      style: TextStyle(color: Colors.grey))),
-
-              // REMEMBER TO CREATE THE PRODUCT BRAND
-              Padding(padding: EdgeInsets.all(5.0), child: new Text("Novo")),
+                  padding: EdgeInsets.all(5.0), child: new Text("${widget.product_detail_brand}")),
             ],
           ),
           // PRODUTOS SIMILARES SECTIONS
