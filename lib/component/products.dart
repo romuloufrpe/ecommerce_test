@@ -1,8 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:historias/pages/product_details.dart';
-import 'store.dart';
-import 'package:historias/db/firebaseMethods.dart';
 
 class Products extends StatefulWidget {
   @override
@@ -11,15 +9,15 @@ class Products extends StatefulWidget {
 
 class _ProductsState extends State<Products> {
   Firestore firestore = Firestore.instance;
-  
+
   String productImages = "productImages";
   String productTitle = "productTitle";
   String productDesc = "productDesc";
   String productPrice = "productPrice";
   String productCat = "productCat";
   String productBrand = "productBrand";
-  
-  
+  String productSize = "productSize";
+
   @override
   Widget build(BuildContext context) {
     return new StreamBuilder(
@@ -40,10 +38,10 @@ class _ProductsState extends State<Products> {
                 gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2, childAspectRatio: 0.85),
                 itemCount: dataCount,
-                itemBuilder: (context, index){
+                itemBuilder: (context, index) {
                   final DocumentSnapshot document =
-                  snapshot.data.documents[index];
-                 return buildProducts(context, index, document);
+                      snapshot.data.documents[index];
+                  return buildProducts(context, index, document);
                 },
               );
             }
@@ -79,8 +77,8 @@ class _ProductsState extends State<Products> {
     );
   }
 
-  Widget buildProducts(BuildContext context, int index, DocumentSnapshot document) {
-
+  Widget buildProducts(
+      BuildContext context, int index, DocumentSnapshot document) {
     List productImage = document[productImages] as List;
     return new GestureDetector(
       onTap: () {
@@ -89,9 +87,10 @@ class _ProductsState extends State<Products> {
                   product_detail_picture: productImage[0],
                   product_detail_name: document[productTitle],
                   product_detail_new_price: document[productPrice],
-                  product_detail_desc:document[productDesc],
+                  product_detail_desc: document[productDesc],
                   product_detail_cat: document[productCat],
                   product_detail_brand: document[productBrand],
+                  //product_detail_size: document[productSize],
                 )));
       },
       child: new Card(
@@ -105,30 +104,27 @@ class _ProductsState extends State<Products> {
                   decoration: new BoxDecoration(
                       image: new DecorationImage(
                           fit: BoxFit.fitWidth,
-                          image:
-                              new NetworkImage(productImage[0]))),
+                          image: new NetworkImage(productImage[0]))),
                 ),
                 new Container(
                   height: 50.0,
                   width: 200.0,
                   color: Colors.black.withAlpha(100),
-                  child: new Column( 
-                    children: <Widget>[
-                      new Text(
-                        "${document["productTitle"]}...",
-                        style: new TextStyle(
-                            fontWeight: FontWeight.w700,
-                            fontSize: 18.0,
-                            color: Colors.white),
-                      ),
-                      new Text(
-                        "\R\$${document["productPrice"]}",
-                        style: new TextStyle(
-                            color: Colors.red[500],
-                            fontWeight: FontWeight.w700),
-                      ),
-                    ]), 
-                  )
+                  child: new Column(children: <Widget>[
+                    new Text(
+                      "${document["productTitle"]}...",
+                      style: new TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 18.0,
+                          color: Colors.white),
+                    ),
+                    new Text(
+                      "\R\$${document["productPrice"]}",
+                      style: new TextStyle(
+                          color: Colors.red[500], fontWeight: FontWeight.w700),
+                    ),
+                  ]),
+                )
               ],
             ),
           ],

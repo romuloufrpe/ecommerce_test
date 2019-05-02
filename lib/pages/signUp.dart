@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:historias/db/users.dart';
 import 'package:historias/ui/home.dart';
+import 'package:historias/component/app_tools.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:historias/db/firebaseMethods.dart';
 
 class SignUp extends StatefulWidget {
   @override
@@ -14,14 +16,13 @@ class _SignUpState extends State<SignUp> {
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   final _formKey = GlobalKey<FormState>();
   UserServices _userServices = UserServices();
-  TextEditingController _nameTextController = TextEditingController();
-  TextEditingController _emailTextController = TextEditingController();
-  TextEditingController _passwordTextController = TextEditingController();
-  TextEditingController _passwordConfirmTextController =
-      TextEditingController();
+  TextEditingController _name = TextEditingController();
+  TextEditingController _email = TextEditingController();
+  TextEditingController _phone = TextEditingController();
+  TextEditingController _password = TextEditingController();
+  TextEditingController _passwordConfirm = TextEditingController();
 
-  String gender;
-  String groupValue = "male";
+  FireBaseMethods appMethods = FireBaseMethods();
 
   bool loading = false;
   bool hidePass = true;
@@ -63,160 +64,57 @@ class _SignUpState extends State<SignUp> {
                         Padding(
                           padding:
                               const EdgeInsets.fromLTRB(14.0, 8.0, 14.0, 8.0),
-                          child: Material(
-                            borderRadius: BorderRadius.circular(10.0),
-                            color: Colors.white.withOpacity(0.4),
-                            elevation: 0.0,
-                            child: Padding(
-                              padding: const EdgeInsets.only(left: 12.0),
-                              child: TextFormField(
-                                controller: _nameTextController,
-                                decoration: InputDecoration(
-                                    hintText: "Nome",
-                                    icon: Icon(FontAwesomeIcons.user),
-                                    border: InputBorder.none),
-                              ),
-                            ),
-                          ),
+                          child: appTextField(
+                              isPassword: false,
+                              textHint: "Nome",
+                              textIcon: FontAwesomeIcons.user,
+                              controller: _name),
                         ),
                         Padding(
                           padding:
                               const EdgeInsets.fromLTRB(14.0, 8.0, 14.0, 8.0),
-                          child: Material(
-                            borderRadius: BorderRadius.circular(10.0),
-                            color: Colors.white.withOpacity(0.4),
-                            elevation: 0.0,
-                            child: Padding(
-                              padding: const EdgeInsets.only(left: 12.0),
-                              child: TextFormField(
-                                controller: _emailTextController,
-                                decoration: InputDecoration(
-                                    hintText: "Email",
-                                    icon: Icon(Icons.alternate_email),
-                                    border: InputBorder.none),
-                                validator: (value) {
-                                  if (value.isEmpty) {
-                                    Pattern pattern =
-                                        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
-                                    RegExp regex = new RegExp(pattern);
-                                    if (!regex.hasMatch(value))
-                                      return 'Entre com um email válido';
-                                    else
-                                      return null;
-                                  }
-                                },
-                              ),
-                            ),
-                          ),
+                          child: appTextField(
+                              isPassword: false,
+                              textHint: "E-mail",
+                              textIcon: FontAwesomeIcons.envelope,
+                              controller: _email),
                         ),
                         Padding(
                           padding:
                               const EdgeInsets.fromLTRB(14.0, 8.0, 14.0, 8.0),
-                          child: Material(
-                            borderRadius: BorderRadius.circular(10.0),
-                            color: Colors.white.withOpacity(0.4),
-                            elevation: 0.0,
-                            child: Padding(
-                              padding: const EdgeInsets.only(left: 12.0),
-                              child: ListTile(
-                                title: TextFormField(
-                                  controller: _passwordTextController,
-                                  obscureText: hidePass,
-                                  decoration: InputDecoration(
-                                      hintText: "Senha",
-                                      icon: Icon(Icons.lock_outline),
-                                      border: InputBorder.none),
-                                  validator: (value) {
-                                    if (value.isEmpty) {
-                                      return "O campo senha está vazio";
-                                    } else if (value.length < 6) {
-                                      return "A senha Precissa conter mais que 6 caracteres";
-                                    }
-                                    return null;
-                                  },
-                                ),
-                                trailing: IconButton(
-                                  icon: Icon(FontAwesomeIcons.eye),
-                                  onPressed: () {
-                                    setState(() {
-                                      if (hidePass == true) {
-                                        hidePass = false;
-                                      } else if (hidePass == false) {
-                                        hidePass = true;
-                                      }
-                                    });
-                                  },
-                                ),
-                              ),
-                            ),
-                          ),
+                          child: appTextField(
+                              isPassword: false,
+                              textHint: "Número de telefone",
+                              textIcon: FontAwesomeIcons.mobileAlt,
+                              controller: _phone,
+                              textType: TextInputType.number),
                         ),
                         Padding(
                           padding:
                               const EdgeInsets.fromLTRB(14.0, 8.0, 14.0, 8.0),
-                          child: Material(
-                            borderRadius: BorderRadius.circular(10.0),
-                            color: Colors.white.withOpacity(0.4),
-                            elevation: 0.0,
-                            child: Padding(
-                              padding: const EdgeInsets.only(left: 12.0),
-                              child: ListTile(
-                                title: TextFormField(
-                                  controller: _passwordConfirmTextController,
-                                  obscureText: hidePass,
-                                  decoration: InputDecoration(
-                                      hintText: "Entre com a senha novamente",
-                                      icon: Icon(Icons.lock_outline),
-                                      border: InputBorder.none),
-                                  validator: (value) {
-                                    if (value.isEmpty) {
-                                      return "O campo senha está vazio";
-                                    } else if (value.length < 6) {
-                                      return "A senha Precissa conter mais que 6 caracteres";
-                                    } else if (_passwordTextController.text !=
-                                        value) {
-                                      return "As senhas não são iguais";
-                                    }
-                                    return null;
-                                  },
-                                ),
-                                trailing: IconButton(
-                                  icon: Icon(FontAwesomeIcons.eye),
-                                  onPressed: () {
-                                    setState(() {
-                                      if (hidePass == true) {
-                                        hidePass = false;
-                                      } else if (hidePass == false) {
-                                        hidePass = true;
-                                      }
-                                    });
-                                  },
-                                ),
-                              ),
-                            ),
-                          ),
+                          child: appTextField(
+                              isPassword: true,
+                              textHint: "Senha",
+                              textIcon: Icons.lock_outline,
+                              controller: _password),
                         ),
                         Padding(
                           padding:
                               const EdgeInsets.fromLTRB(14.0, 8.0, 14.0, 8.0),
-                          child: Material(
-                              borderRadius: BorderRadius.circular(20.0),
-                              color: Colors.orange.shade700,
-                              elevation: 0.0,
-                              child: MaterialButton(
-                                onPressed: () async {
-                                  validateFrom();
-                                },
-                                minWidth: MediaQuery.of(context).size.width,
-                                child: Text(
-                                  "Criar Conta",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 20.0),
-                                ),
-                              )),
+                          child: appTextField(
+                              isPassword: true,
+                              textHint: "Confirme a Senha",
+                              textIcon: Icons.lock_outline,
+                              controller: _passwordConfirm),
+                        ),
+                        Padding(
+                          padding:
+                              const EdgeInsets.fromLTRB(14.0, 8.0, 14.0, 8.0),
+                          child: appButton(
+                              btnTxt: "Criar conta",
+                              onBtnclicked: validateFrom,
+                              btnPadding: 20.0,
+                              btnColor: Colors.orange),
                         ),
                       ],
                     )),
@@ -240,37 +138,17 @@ class _SignUpState extends State<SignUp> {
     );
   }
 
-  valueChanged(e) {
-    setState(() {
-      if (e == "male") {
-        groupValue = e;
-      } else if (e == "female") {
-        groupValue = e;
-      }
-    });
-  }
-
   Future validateFrom() async {
     FormState formState = _formKey.currentState;
-    Map value;
     if (formState.validate()) {
       formState.reset();
       FirebaseUser user = await firebaseAuth.currentUser();
       if (user == null) {
-        firebaseAuth
-            .createUserWithEmailAndPassword(
-                email: _emailTextController.text,
-                password: _passwordTextController.text)
-            .then((user) => {
-                  value = {
-                    "username": _nameTextController.text,
-                    "email": _emailTextController.text,
-                    "userId": user.uid
-                  },
-                  _userServices.createUser(value)
-                })
-            .catchError((err) => {print(err.toString())});
-
+        appMethods.createUserAccount(
+            email: _email.text,
+            fullname: _name.text,
+            phone: _phone.text,
+            password: _password.text);
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => HomePage()));
       }
