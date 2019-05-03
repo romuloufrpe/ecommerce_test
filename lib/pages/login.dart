@@ -13,8 +13,14 @@ class _LoginState extends State<Login> {
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
   final scaffoldKey = new GlobalKey<ScaffoldState>();
-  BuildContext context;
+  String _errorMessage;
+  final _formKey = GlobalKey<FormState>();
+  //BuildContext context;
   FireBaseMethods appMethods = FireBaseMethods();
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -83,7 +89,7 @@ class _LoginState extends State<Login> {
     );
   }
 
-  verifyLoggin() async {
+  Future<void> verifyLoggin() async {
     if (email.text == "") {
       return print("Email cannot be empty");
     }
@@ -91,18 +97,26 @@ class _LoginState extends State<Login> {
     if (password.text == "") {
       return print("Password cannot be empty");
     }
-
-    displayProgressDialog(context);
-    String response = await appMethods.logginUser(
-        email: email.text.toLowerCase(), password: password.text.toLowerCase());
-    if (response == "successful") {
-      closeProgressDialog(context);
-      Navigator.of(context).pop(true);
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => HomePage()));
-    } else {
-      closeProgressDialog(context);
-      //showSnackBar(response, scaffoldKey);
+    try {
+      FormState formState = _formKey.currentState;
+      
+      displayProgressDialog(context);
+      String response = await appMethods.logginUser(
+          email: email.text.toLowerCase(),
+          password: password.text.toLowerCase());
+      print(response);
+      if (response == "successful") {
+        closeProgressDialog(context);
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => HomePage()));
+      }
+      else{
+        closeProgressDialog(context);
+        showSnackBar("Email ou senhas invalidas", scaffoldKey);
+        
+      }
+    } catch (e) {
+      print(e.toString());
     }
   }
 }

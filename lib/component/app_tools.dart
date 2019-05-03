@@ -138,3 +138,21 @@ displayProgressDialog(BuildContext context) {
         return new ProgressDialog();
       }));
 }
+
+getDataLocally({String key}) async {
+  Future<SharedPreferences> saveLocal = SharedPreferences.getInstance();
+  final SharedPreferences localData = await saveLocal;
+  return localData.get(key);
+}
+
+getStringDataLocally({String key}) async {
+  Future<SharedPreferences> saveLocal = SharedPreferences.getInstance();
+  final SharedPreferences localData = await saveLocal;
+  return localData.getString(key);
+}
+
+getBoolDataLocally({String key}) async {
+  Future<SharedPreferences> saveLocal = SharedPreferences.getInstance();
+  final SharedPreferences localData = await saveLocal;
+  return localData.getBool(key) == null ? false : localData.getBool(key);
+}

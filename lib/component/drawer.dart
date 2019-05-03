@@ -5,6 +5,8 @@ import 'package:historias/pages/cart.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:historias/pages/login.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:historias/db/firebaseMethods.dart';
+import 'package:historias/component/app_tools.dart';
 
 class DrawerWidget extends StatefulWidget {
   @override
@@ -13,6 +15,9 @@ class DrawerWidget extends StatefulWidget {
 
 class _DrawerWidgetState extends State<DrawerWidget> {
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+  FireBaseMethods fireBaseMethods = FireBaseMethods();
+  FirebaseUser user;
+
 //  String email = firebaseAuth.currentUser();
   int itemSelect = 0;
   
@@ -69,7 +74,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
             height: 12.0,
           ),
           Text(
-            'Rômulo Ferreira',
+            "Firebase getInfo[userName]",
             style: TextStyle(
                 fontSize: 18.0,
                 fontWeight: FontWeight.bold,

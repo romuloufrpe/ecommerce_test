@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:historias/component/app_tools.dart';
 
 class FireBaseMethods {
@@ -47,26 +46,47 @@ class FireBaseMethods {
     FirebaseUser user;
 
     // TODO implemet Login user email e password
+    try {
+      user = await auth.signInWithEmailAndPassword(
+          email: email, password: password);
+      if (user != null) {
+        print(isEmailVerified());
+        DocumentSnapshot userInfo = await getUserInfo(user.uid);
+        await writeDataLocally(key: userID, value: userInfo[userID]);
+        await writeDataLocally(
+            key: acctFullName, value: userInfo[acctFullName]);
+        await writeDataLocally(key: userEmail, value: userInfo[email]);
+        // await writeDataLocally(key: photoURL, value: userInfo[photoURL]);
+        await writeDataLocally(key: phoneNumber, value: userInfo[phoneNumber]);
+        await writeBoolDataLocally(key: loggedIN, value: true);
 
-    user =
-        await auth.signInWithEmailAndPassword(email: email, password: password);
+        print(userInfo[userEmail]);
 
-    if (user != null) {
-      DocumentSnapshot userInfo = await getUserInfo(user.uid);
-      await writeDataLocally(key: userID, value: userInfo[userID]);
-      await writeDataLocally(key: acctFullName, value: userInfo[acctFullName]);
-      await writeDataLocally(key: userEmail, value: userInfo[email]);
-      // await writeDataLocally(key: photoURL, value: userInfo[photoURL]);
-      await writeDataLocally(key: phoneNumber, value: userInfo[phoneNumber]);
-      await writeBoolDataLocally(key: loggedIN, value: true);
-
-      print(userInfo[userEmail]);
-      return user.uid;
+        return "successful";
+      }
+    } catch (e) {
+      print(e.toString());
     }
-    return "successful";
+
+    return "notsuccessful";
   }
 
   Future<DocumentSnapshot> getUserInfo(String userid) async {
     return await _firestore.collection("users").document(userid).get();
+  }
+
+  Future<String> currentUser() async {
+    FirebaseUser user = await auth.currentUser();
+    return user?.uid;
+  }
+
+  Future<void> sendEmailVerification() async {
+    FirebaseUser user = await auth.currentUser();
+    user.sendEmailVerification();
+  }
+
+  Future<bool> isEmailVerified() async {
+    FirebaseUser user = await auth.currentUser();
+    return user.isEmailVerified;
   }
 }
