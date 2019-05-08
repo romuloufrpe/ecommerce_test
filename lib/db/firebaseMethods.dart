@@ -15,6 +15,7 @@ class FireBaseMethods {
   String userPassword = "userPassword";
   String photoURL = "photoURL";
   String loggedIN = "loggedIN";
+  String state = "";
 
   Future<String> createUserAccount(
       {String fullname, String phone, String email, String password}) async {
@@ -33,11 +34,11 @@ class FireBaseMethods {
         phoneNumber: phone
       });
 
-      writeDataLocally(key: userID, value: user.uid);
-      writeDataLocally(key: acctFullName, value: fullname);
-      writeDataLocally(key: userEmail, value: email);
-      writeDataLocally(key: userPassword, value: password);
-      writeDataLocally(key: phoneNumber, value: phone);
+      await writeDataLocally(key: userID, value: user.uid);
+      await writeDataLocally(key: acctFullName, value: fullname);
+      await writeDataLocally(key: userEmail, value: email);
+      await writeDataLocally(key: userPassword, value: password);
+      await writeDataLocally(key: phoneNumber, value: phone);
     }
     return user.uid;
   }
@@ -50,7 +51,6 @@ class FireBaseMethods {
       user = await auth.signInWithEmailAndPassword(
           email: email, password: password);
       if (user != null) {
-        print(isEmailVerified());
         DocumentSnapshot userInfo = await getUserInfo(user.uid);
         await writeDataLocally(key: userID, value: userInfo[userID]);
         await writeDataLocally(
@@ -61,8 +61,15 @@ class FireBaseMethods {
         await writeBoolDataLocally(key: loggedIN, value: true);
 
         print(userInfo[userEmail]);
+        print(userInfo[acctFullName]);
 
-        return "successful";
+        state = "successful";
+        switch (state) {
+          case "successful":
+              //print(currentUser().toString());
+              return state;
+          default:
+        }
       }
     } catch (e) {
       print(e.toString());
@@ -76,7 +83,7 @@ class FireBaseMethods {
   }
 
   Future<String> currentUser() async {
-    FirebaseUser user = await auth.currentUser();
+    var user = await auth.currentUser();
     return user?.uid;
   }
 

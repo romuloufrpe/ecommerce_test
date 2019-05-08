@@ -3,6 +3,10 @@ import 'package:historias/component/drawer.dart';
 import 'package:historias/ui/screen.dart';
 
 class HomePage extends StatefulWidget {
+  final String email;
+  final String name;
+
+  HomePage({Key key, @required this.email, @required this.name}): super(key:key);
   @override
   _HomePageState createState() => new _HomePageState();
 }
@@ -58,7 +62,7 @@ class _HomePageState extends State<HomePage>
   Widget build(BuildContext context) {
     return Stack(
       children: <Widget>[
-        DrawerWidget(),
+        DrawerWidget(email: widget.email, name: widget.name,),
         Transform.scale(
           scale: animationSize.value,
           child: Container(

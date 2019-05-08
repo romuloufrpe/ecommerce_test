@@ -12,7 +12,7 @@ Widget CaroselPage = new Container(
       AssetImage('assets/img/c4.jpg'),
       AssetImage('assets/img/c5.jpg'),
     ],
-    autoplay: true,
+    autoplay: false,
     animationCurve: Curves.fastOutSlowIn,
     animationDuration: Duration(milliseconds: 1000),
     dotSize: 4.0,

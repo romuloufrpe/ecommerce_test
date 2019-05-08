@@ -1,19 +1,58 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:historias/db/user_repository.dart';
 import 'package:historias/db/users.dart';
+import 'package:historias/pages/register/bloc/bloc.dart';
+import 'package:historias/pages/register/register_form.dart';
 import 'package:historias/ui/home.dart';
 import 'package:historias/component/app_tools.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:historias/db/firebaseMethods.dart';
 
 class SignUp extends StatefulWidget {
-  @override
-  _SignUpState createState() => _SignUpState();
+  final UserRepository _userRepository;
+
+  SignUp({Key key, @required UserRepository userRepository})
+      : assert(userRepository != null),
+        _userRepository = userRepository,
+        super(key: key);
+  State<SignUp> createState() => _SignUpState();
 }
 
 class _SignUpState extends State<SignUp> {
-  final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+
+  RegisterBloc _registerBloc;
+
+  @override
+  void initState() {
+    super.initState();
+    _registerBloc = RegisterBloc(
+      userRepository: widget._userRepository
+    );
+  }
+
+
+  @override
+  Widget build(BuildContext context){
+    return Scaffold(
+      body: Center(
+        child: BlocProvider<RegisterBloc>(
+          bloc: _registerBloc,
+          child: RegisterForm(),
+        ),
+      ),
+    );
+  }
+
+  @override
+  void dispose(){
+    _registerBloc.dispose();
+    super.dispose();
+  }
+
+  /*final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   final _formKey = GlobalKey<FormState>();
   UserServices _userServices = UserServices();
   TextEditingController _name = TextEditingController();
@@ -153,5 +192,5 @@ class _SignUpState extends State<SignUp> {
             context, MaterialPageRoute(builder: (context) => HomePage()));
       }
     }
-  }
+  }*/
 }
