@@ -207,7 +207,9 @@ class _RegisterFormState extends State<RegisterForm> {
     _registerBloc.dispatch(
       Submitted(
         email: _email.text,
-        password: _password.text
+        password: _password.text,
+        phone: _phone.text,
+        name: _name.text
       )
     );
   }

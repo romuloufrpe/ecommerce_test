@@ -90,6 +90,7 @@ class _ProductsState extends State<Products> {
                   product_detail_desc: document[productDesc],
                   product_detail_cat: document[productCat],
                   product_detail_brand: document[productBrand],
+                  
                   //product_detail_size: document[productSize],
                 )));
       },

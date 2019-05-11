@@ -12,15 +12,23 @@ class ProductDetails extends StatefulWidget {
   final product_detail_desc;
   final product_detail_cat;
   final product_detail_brand;
+  final String email;
+  final String name;
 
   ProductDetails(
-      {this.product_detail_name,
+      {
+      Key key,
+      this.product_detail_name,
       this.product_detail_new_price,
       this.product_detail_old_price,
       this.product_detail_picture,
       this.product_detail_desc,
       this.product_detail_cat,
-      this.product_detail_brand});
+      this.product_detail_brand,
+      @required this.name,
+      @required this.email}) : super(key: key);
+
+      
 
   @override
   _ProductDetailsState createState() => _ProductDetailsState();
@@ -37,7 +45,7 @@ class _ProductDetailsState extends State<ProductDetails> {
         title: InkWell(
           onTap: () {
             Navigator.push(context,
-                MaterialPageRoute(builder: (context) => new HomePage()));
+                MaterialPageRoute(builder: (context) => new HomePage(name: widget.name ,email: widget.email,)));
           },
           child: Text("FastShop"),
         ),
