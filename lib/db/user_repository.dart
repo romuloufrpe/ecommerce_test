@@ -22,9 +22,9 @@ Firestore _firestore = Firestore.instance;
     final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
     final GoogleSignInAuthentication googleAuth =
         await googleUser.authentication;
-    final AuthCredential credential = GoogleAuthProvider.getCredential(
+     AuthCredential credential = GoogleAuthProvider.getCredential(
         accessToken: googleAuth.accessToken, idToken: googleAuth.accessToken);
-    await _firebaseAuth.signInWithCredential(credential);
+    FirebaseUser firebaseUser = await _firebaseAuth.signInWithCredential(credential);
     return _firebaseAuth.currentUser();
   }
 

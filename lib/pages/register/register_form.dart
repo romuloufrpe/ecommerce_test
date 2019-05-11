@@ -154,11 +154,15 @@ class _RegisterFormState extends State<RegisterForm> {
                                 textIcon: Icons.lock_outline,
                                 controller: _passwordConfirm),
                           ),
-                          RegisterButton(
+                         Padding(
+                           padding: 
+                           const EdgeInsets.fromLTRB(14.0, 8.0, 14.0, 8.0),
+                           child: RegisterButton(
                             onPressed: isRegisterButtonEnabled(state)
                                 ? _onFormSubmitted
                                 : null,
-                          )
+                          ),
+                         ),
                         ],
                       )),
                     ),

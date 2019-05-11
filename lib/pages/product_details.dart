@@ -1,4 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:historias/component/theme.dart' as Theme;
 import 'package:historias/ui/home.dart';
@@ -16,8 +19,7 @@ class ProductDetails extends StatefulWidget {
   final String name;
 
   ProductDetails(
-      {
-      Key key,
+      {Key key,
       this.product_detail_name,
       this.product_detail_new_price,
       this.product_detail_old_price,
@@ -26,9 +28,8 @@ class ProductDetails extends StatefulWidget {
       this.product_detail_cat,
       this.product_detail_brand,
       @required this.name,
-      @required this.email}) : super(key: key);
-
-      
+      @required this.email})
+      : super(key: key);
 
   @override
   _ProductDetailsState createState() => _ProductDetailsState();
@@ -44,8 +45,13 @@ class _ProductDetailsState extends State<ProductDetails> {
         backgroundColor: Theme.Colors.appBarColor,
         title: InkWell(
           onTap: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => new HomePage(name: widget.name ,email: widget.email,)));
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => new HomePage(
+                          name: widget.name,
+                          email: widget.email,
+                        )));
           },
           child: Text("FastShop"),
         ),
@@ -64,17 +70,16 @@ class _ProductDetailsState extends State<ProductDetails> {
           new Container(
             height: 300.0,
             child: GridTile(
-              child: new Container(
-                decoration: new BoxDecoration(
-                    borderRadius: new BorderRadius.only(
-                      bottomLeft: new Radius.circular(100.0),
-                      bottomRight: new Radius.circular(100.0),
-                    ),
-                    image: new DecorationImage(
-                        // !ADICIONAR CARROSEL
-                        image: new NetworkImage(
-                            "${widget.product_detail_picture}"),
-                        fit: BoxFit.fitHeight)),
+              child: new Carousel(
+                autoplay: true,
+                animationCurve: Curves.fastOutSlowIn,
+                animationDuration: Duration(milliseconds: 1000),
+                dotSize: 4.0,
+                indicatorBgPadding: 4.0,
+                dotBgColor: Colors.transparent,
+                images: [
+                  new NetworkImage("${widget.product_detail_picture}"),
+                ],
               ),
               footer: new Container(
                 color: Colors.white70,
@@ -209,7 +214,9 @@ class _ProductDetailsState extends State<ProductDetails> {
               // ======== TAMANHO DO PRODUTO
               Expanded(
                 child: MaterialButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      getImagesUrl(widget.product_detail_picture);
+                    },
                     color: Colors.red,
                     textColor: Colors.white,
                     elevation: 0.2,
@@ -288,5 +295,19 @@ class _ProductDetailsState extends State<ProductDetails> {
         ],
       ),
     );
+  }
+  void getImagesUrl(String productImages) async{
+     final QuerySnapshot result = await Firestore.instance
+     .collection("product")
+     .getDocuments();
+
+     List<DocumentSnapshot> document = result.documents;
+
+     if(document.length == 0){
+       return print("sem imagens");
+     }else{
+       print(document.length);
+       print(document.toSet().length);
+     }
   }
 }
