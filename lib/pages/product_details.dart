@@ -31,10 +31,12 @@ class ProductDetails extends StatefulWidget {
       @required this.email})
       : super(key: key);
 
+  
   @override
   _ProductDetailsState createState() => _ProductDetailsState();
 }
 
+List<String> imagesUrl = new List();
 class _ProductDetailsState extends State<ProductDetails> {
   @override
   Widget build(BuildContext context) {
@@ -299,15 +301,18 @@ class _ProductDetailsState extends State<ProductDetails> {
   void getImagesUrl(String productImages) async{
      final QuerySnapshot result = await Firestore.instance
      .collection("product")
+     .where("${widget.product_detail_picture}")
      .getDocuments();
 
      List<DocumentSnapshot> document = result.documents;
+     List<DocumentSnapshot> urlsPhotos = document.toList();
 
      if(document.length == 0){
        return print("sem imagens");
      }else{
        print(document.length);
-       print(document.toSet().length);
+       print("${widget.product_detail_picture}");
+       
      }
   }
 }
