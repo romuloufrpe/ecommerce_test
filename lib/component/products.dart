@@ -10,6 +10,7 @@ class Products extends StatefulWidget {
 class _ProductsState extends State<Products> {
   Firestore firestore = Firestore.instance;
 
+  String productID = "productID";
   String productImages = "productImages";
   String productTitle = "productTitle";
   String productDesc = "productDesc";
@@ -84,6 +85,7 @@ class _ProductsState extends State<Products> {
       onTap: () {
         Navigator.of(context).push(new MaterialPageRoute(
             builder: (context) => new ProductDetails(
+              product_detail_id: document[productID],
                   product_detail_picture: productImage[0],
                   product_detail_name: document[productTitle],
                   product_detail_new_price: document[productPrice],

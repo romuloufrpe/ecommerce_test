@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -8,6 +11,7 @@ import 'package:historias/ui/home.dart';
 import 'package:carousel_pro/carousel_pro.dart';
 
 class ProductDetails extends StatefulWidget {
+  final product_detail_id;
   final product_detail_name;
   final product_detail_new_price;
   final product_detail_old_price;
@@ -20,6 +24,7 @@ class ProductDetails extends StatefulWidget {
 
   ProductDetails(
       {Key key,
+      this.product_detail_id,
       this.product_detail_name,
       this.product_detail_new_price,
       this.product_detail_old_price,
@@ -37,6 +42,7 @@ class ProductDetails extends StatefulWidget {
 }
 
 List<String> imagesUrl = new List();
+String url;
 class _ProductDetailsState extends State<ProductDetails> {
   @override
   Widget build(BuildContext context) {
@@ -72,7 +78,7 @@ class _ProductDetailsState extends State<ProductDetails> {
           new Container(
             height: 300.0,
             child: GridTile(
-              child: new Carousel(
+              child: new  Carousel(
                 autoplay: true,
                 animationCurve: Curves.fastOutSlowIn,
                 animationDuration: Duration(milliseconds: 1000),
@@ -217,7 +223,7 @@ class _ProductDetailsState extends State<ProductDetails> {
               Expanded(
                 child: MaterialButton(
                     onPressed: () {
-                      getImagesUrl(widget.product_detail_picture);
+                      print(getImagesUrl(widget.product_detail_id));
                     },
                     color: Colors.red,
                     textColor: Colors.white,
@@ -298,21 +304,36 @@ class _ProductDetailsState extends State<ProductDetails> {
       ),
     );
   }
-  void getImagesUrl(String productImages) async{
+  Future<String> getImagesUrl(String productID) async{
      final QuerySnapshot result = await Firestore.instance
      .collection("product")
-     .where("${widget.product_detail_picture}")
+     .where("productID", isEqualTo: productID)
      .getDocuments();
 
-     List<DocumentSnapshot> document = result.documents;
-     List<DocumentSnapshot> urlsPhotos = document.toList();
+       var uRlsImages = new List<String>();
+          Firestore.instance
+           .collection("product")
+           .where("productID", isEqualTo: productID)
+           .snapshots()
+           .listen((data) =>
+               data.documents.forEach((doc) => uRlsImages.add(doc["productImages"])));
 
-     if(document.length == 0){
-       return print("sem imagens");
-     }else{
+              var size = uRlsImages.length;
+              print(size);
+
+     List<DocumentSnapshot> document = result.documents;
        print(document.length);
-       print("${widget.product_detail_picture}");
-       
+       print("$productID");
+       StorageReference ref = 
+        FirebaseStorage.instance.ref().child("products/$productID/$productID"+"0.jpg");
+        
+        String url = ( await ref.getDownloadURL()).toString();
+        return url;
      }
+
+
+    countImages(String productID){
+         
+   
+    }
   }
-}
